@@ -1,0 +1,25 @@
+#!/bin/sh
+
+case "$1" in
+ start)
+  echo "Starting Anti-DPI..."
+  ;;
+ stop)
+  echo "Stopping Anti-DPI..."
+  ;;
+ restart)
+  echo "Restarting Anti-DPI..."
+  ;;
+ status)
+  echo "Checking Anti-DPI status..."
+  ;;
+ update)
+  echo "Updating hostlists..."
+  ;;
+ test)
+  echo "Testing DPI bypass..."
+  ;;
+ *)
+  echo "Usage: antidpi {start|stop|restart|status|update|test}"
+  ;;
+esac
