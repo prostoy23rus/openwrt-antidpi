@@ -5,6 +5,7 @@ CONFIG_DIR="/etc/antidpi"
 PID_FILE="/var/run/antidpi.pid"
 
 start_antidpi() {
+
     echo "Starting Anti-DPI..."
 
     if [ -f "$PID_FILE" ]; then
@@ -12,17 +13,28 @@ start_antidpi() {
         exit 1
     fi
 
-    nfqws --dpi-desync=fake,split2 \
-          --dpi-desync-split-pos=1 \
-          --dpi-desync-repeats=3 \
-          --dpi-desync-fooling=badsum \
-          --filter-tcp=80,443 &
+    STRATEGY="fake,split2"
+
+    if [ -f "$CONFIG_DIR/best-strategy.conf" ]; then
+        STRATEGY=$(cat $CONFIG_DIR/best-strategy.conf)
+        echo "Using detected strategy: $STRATEGY"
+    fi
+
+    nfqws \
+        --dpi-desync=$STRATEGY \
+        --dpi-desync-split-pos=1 \
+        --dpi-desync-repeats=3 \
+        --dpi-desync-fooling=badsum \
+        --filter-tcp=80,443 &
 
     echo $! > $PID_FILE
+
     echo "Anti-DPI started"
 }
 
+
 stop_antidpi() {
+
     echo "Stopping Anti-DPI..."
 
     if [ ! -f "$PID_FILE" ]; then
@@ -31,40 +43,64 @@ stop_antidpi() {
     fi
 
     kill $(cat $PID_FILE)
+
     rm -f $PID_FILE
 
     echo "Stopped"
 }
 
+
 status_antidpi() {
+
     if [ -f "$PID_FILE" ]; then
         echo "Anti-DPI running (PID $(cat $PID_FILE))"
     else
         echo "Anti-DPI stopped"
     fi
+
 }
 
+
+restart_antidpi() {
+
+    stop_antidpi
+    start_antidpi
+
+}
+
+
 case "$1" in
+
  start)
   start_antidpi
  ;;
+
  stop)
   stop_antidpi
  ;;
+
  restart)
-  stop_antidpi
-  start_antidpi
+  restart_antidpi
  ;;
+
  status)
   status_antidpi
  ;;
+
  test)
   sh /usr/lib/antidpi/dpi-detector.sh
  ;;
+
  update)
   sh /usr/lib/antidpi/update-hostlists.sh
  ;;
- *)
-  echo "Usage: antidpi {start|stop|restart|status|test|update}"
+
+ auto)
+  sh /usr/lib/antidpi/strategy-detector.sh
  ;;
+
+ *)
+  echo "Usage: antidpi {start|stop|restart|status|test|update|auto}"
+ ;;
+
 esac
