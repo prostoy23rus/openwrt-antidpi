@@ -32,6 +32,7 @@ jobs:
       - name: Prepare config
         run: |
           cd openwrt
+          echo "CONFIG_PACKAGE_antidpi=y" >> .config
           make defconfig
 
       - name: Compile package
