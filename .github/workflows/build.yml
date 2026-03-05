@@ -26,8 +26,7 @@ jobs:
           ./scripts/feeds install -a
 
       - name: Copy package
-        run: |
-          mkdir -p openwrt/package/custom 
+        run: | 
           cp -r $GITHUB_WORKSPACE/package/antidpi openwrt/package/
 
       - name: Prepare config
@@ -41,7 +40,7 @@ jobs:
           cd openwrt
           make defconfig
           make package/index
-          make package/custom/antidpi/compile V=s
+          make package/antidpi/compile V=s
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
