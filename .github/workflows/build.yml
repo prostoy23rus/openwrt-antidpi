@@ -27,6 +27,7 @@ jobs:
 
       - name: Copy package
         run: |
+          mkdir -p openwrt/package/custom 
           cp -r $GITHUB_WORKSPACE/package/antidpi openwrt/package/
 
       - name: Prepare config
@@ -38,7 +39,7 @@ jobs:
       - name: Compile package
         run: |
           cd openwrt
-          make package/antidpi/compile V=s
+          make package/custom/antidpi/compile V=s
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
