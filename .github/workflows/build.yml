@@ -38,6 +38,8 @@ jobs:
       run: |
         cd openwrt
         make defconfig
+        echo "CONFIG_SIGNED_PACKAGES=n" >> .config
+        make defconfig
 
     - name: Fix libdeflate-gzip
       run: |
