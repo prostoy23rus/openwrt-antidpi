@@ -1,0 +1,33 @@
+include $(TOPDIR)/rules.mk
+
+PKG_NAME:=antidpi
+PKG_VERSION:=0.1
+PKG_RELEASE:=1
+
+include $(INCLUDE_DIR)/package.mk
+
+define Package/antidpi
+  SECTION:=net
+  CATEGORY:=Network
+  TITLE:=Anti DPI manager
+  DEPENDS:=+wget +curl +ipset +iptables
+endef
+
+define Package/antidpi/description
+ Anti DPI manager for OpenWRT using nfqws
+endef
+
+define Package/antidpi/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ./files/antidpi $(1)/usr/bin/antidpi
+
+	$(INSTALL_DIR) $(1)/usr/lib/antidpi
+	$(INSTALL_BIN) ./files/dpi-detector.sh $(1)/usr/lib/antidpi/
+	$(INSTALL_BIN) ./files/strategy-detector.sh $(1)/usr/lib/antidpi/
+	$(INSTALL_BIN) ./files/update-hostlists.sh $(1)/usr/lib/antidpi/
+
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/antidpi.init $(1)/etc/init.d/antidpi
+endef
+
+$(eval $(call BuildPackage,antidpi))
