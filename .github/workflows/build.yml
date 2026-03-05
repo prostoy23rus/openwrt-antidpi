@@ -23,8 +23,6 @@ jobs:
         libssl-dev rsync unzip zlib1g-dev \
         file wget gzip
 
-        sudo ln -s /usr/bin/gzip /usr/bin/libdeflate-gzip || true
-
     - name: Clone OpenWRT
       run: |
         git clone https://github.com/openwrt/openwrt.git
@@ -40,6 +38,12 @@ jobs:
       run: |
         cd openwrt
         make defconfig
+
+    - name: Fix libdeflate-gzip
+      run: |
+        cd openwrt
+        mkdir -p staging_dir/host/bin
+        ln -sf /usr/bin/gzip staging_dir/host/bin/libdeflate-gzip
 
     - name: Compile package
       run: |
