@@ -1,25 +1,64 @@
 #!/bin/sh
 
+BASE_DIR="/opt/antidpi"
+CONFIG_DIR="/etc/antidpi"
+PID_FILE="/var/run/antidpi.pid"
+
+start_antidpi() {
+    echo "Starting Anti-DPI..."
+
+    if [ -f "$PID_FILE" ]; then
+        echo "Already running"
+        exit 1
+    fi
+
+    nfqws --dpi-desync=fake,split2 \
+          --dpi-desync-split-pos=1 \
+          --dpi-desync-repeats=3 \
+          --dpi-desync-fooling=badsum \
+          --filter-tcp=80,443 &
+
+    echo $! > $PID_FILE
+    echo "Anti-DPI started"
+}
+
+stop_antidpi() {
+    echo "Stopping Anti-DPI..."
+
+    if [ ! -f "$PID_FILE" ]; then
+        echo "Not running"
+        exit 1
+    fi
+
+    kill $(cat $PID_FILE)
+    rm -f $PID_FILE
+
+    echo "Stopped"
+}
+
+status_antidpi() {
+    if [ -f "$PID_FILE" ]; then
+        echo "Anti-DPI running (PID $(cat $PID_FILE))"
+    else
+        echo "Anti-DPI stopped"
+    fi
+}
+
 case "$1" in
  start)
-  echo "Starting Anti-DPI..."
-  ;;
+  start_antidpi
+ ;;
  stop)
-  echo "Stopping Anti-DPI..."
-  ;;
+  stop_antidpi
+ ;;
  restart)
-  echo "Restarting Anti-DPI..."
-  ;;
+  stop_antidpi
+  start_antidpi
+ ;;
  status)
-  echo "Checking Anti-DPI status..."
-  ;;
- update)
-  echo "Updating hostlists..."
-  ;;
- test)
-  echo "Testing DPI bypass..."
-  ;;
+  status_antidpi
+ ;;
  *)
-  echo "Usage: antidpi {start|stop|restart|status|update|test}"
-  ;;
+  echo "Usage: antidpi {start|stop|restart|status}"
+ ;;
 esac
