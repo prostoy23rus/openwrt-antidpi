@@ -10,29 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-- name: Install dependencies
-  run: |
-    sudo apt-get update
-    sudo apt-get install -y \
-      build-essential \
-      clang \
-      flex \
-      g++ \
-      gawk \
-      gcc-multilib \
-      gettext \
-      git \
-      libncurses-dev \
-      libssl-dev \
-      python3 \
-      rsync \
-      unzip \
-      wget \
-      zlib1g-dev
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang flex g++ gawk gcc-multilib gettext git libncurses-dev libssl-dev python3 rsync unzip wget zlib1g-dev
 
       - name: Clone OpenWRT
         run: |
@@ -50,7 +34,7 @@ jobs:
           cd openwrt
           make defconfig
 
-      - name: Build package
+      - name: Compile package
         run: |
           cd openwrt
           make package/antidpi/compile V=s
