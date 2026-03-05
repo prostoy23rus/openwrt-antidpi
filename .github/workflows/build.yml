@@ -14,11 +14,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential clang flex g++ gawk gcc-multilib \
-          gettext git libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev wget
+- name: Install dependencies
+  run: |
+    sudo apt-get update
+    sudo apt-get install -y \
+      build-essential \
+      clang \
+      flex \
+      g++ \
+      gawk \
+      gcc-multilib \
+      gettext \
+      git \
+      libncurses-dev \
+      libssl-dev \
+      python3 \
+      rsync \
+      unzip \
+      wget \
+      zlib1g-dev
 
       - name: Clone OpenWRT
         run: |
