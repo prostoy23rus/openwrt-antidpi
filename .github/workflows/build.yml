@@ -39,6 +39,7 @@ jobs:
       - name: Compile package
         run: |
           cd openwrt
+          make defconfig
           make package/custom/antidpi/compile V=s
 
       - name: Upload artifact
