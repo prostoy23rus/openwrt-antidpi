@@ -61,7 +61,10 @@ case "$1" in
  test)
   sh /usr/lib/antidpi/dpi-detector.sh
  ;;
+ update)
+  sh /usr/lib/antidpi/update-hostlists.sh
+ ;;
  *)
-  echo "Usage: antidpi {start|stop|restart|status|test}"
+  echo "Usage: antidpi {start|stop|restart|status|test|update}"
  ;;
 esac
