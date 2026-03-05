@@ -1,0 +1,43 @@
+name: Build OpenWRT Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential git wget
+
+      - name: Clone OpenWRT
+        run: |
+          git clone https://github.com/openwrt/openwrt.git
+          cd openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Copy package
+        run: |
+          cp -r $GITHUB_WORKSPACE/package/antidpi openwrt/package/
+
+      - name: Build package
+        run: |
+          cd openwrt
+          make defconfig
+          make package/antidpi/compile V=s
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: antidpi-ipk
+          path: openwrt/bin/packages/**/antidpi*.ipk
