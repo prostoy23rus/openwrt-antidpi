@@ -58,7 +58,10 @@ case "$1" in
  status)
   status_antidpi
  ;;
+ test)
+  sh /usr/lib/antidpi/dpi-detector.sh
+ ;;
  *)
-  echo "Usage: antidpi {start|stop|restart|status}"
+  echo "Usage: antidpi {start|stop|restart|status|test}"
  ;;
 esac
