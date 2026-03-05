@@ -10,11 +10,14 @@ define Package/antidpi
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Anti DPI manager
-  DEPENDS:=+wget +curl +ipset +iptables
+  DEPENDS:=+wget +curl
 endef
 
 define Package/antidpi/description
  Anti DPI manager for OpenWRT using nfqws
+endef
+
+define Build/Compile
 endef
 
 define Package/antidpi/install
