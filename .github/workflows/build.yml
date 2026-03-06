@@ -66,11 +66,14 @@ jobs:
 
     - name: Prepare opkg repository
       run: |
+        sudo apt update
+        sudo apt install -y opkg-utils
+
         mkdir repo
         cp openwrt/bin/packages/*/*/*.ipk repo/
         cd repo
 
-        python3 ../openwrt/scripts/ipkg-make-index.sh . > Packages
+        opkg-make-index . > Packages
         gzip -9c Packages > Packages.gz
 
     - name: Deploy to GitHub Pages
