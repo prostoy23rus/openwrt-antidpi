@@ -67,18 +67,17 @@ jobs:
     - name: Prepare opkg repository
       run: |
         mkdir repo
-        cp openwrt/bin/packages/*/*/antidpi*.ipk repo/
-
+        cp openwrt/bin/packages/*/*/*.ipk repo/
         cd repo
-        ../openwrt/staging_dir/host/bin/ipkg-make-index . > Packages
-        gzip -k Packages
+
+        python3 ../openwrt/scripts/ipkg-make-index.sh . > Packages
+        gzip -9c Packages > Packages.gz
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./repo
-        publish_branch: gh-pages
+        publish_dir: repo
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
